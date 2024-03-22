@@ -13,6 +13,7 @@ import UserProfile from './components/UserProfile';
 import LogIn from './components/Login';
 import Credits from './components/Credits';
 import Debits from './components/Debits';
+import Views from './components/Views';
 
 class App extends Component {
   constructor() {  // Create and initialize state
@@ -45,6 +46,10 @@ class App extends Component {
     const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
     const CreditsComponent = () => (<Credits credits={this.state.creditList} />) 
     const DebitsComponent = () => (<Debits debits={this.state.debitList} />) 
+    const ViewsComponent = () => (<Views />);
+
+   
+
 
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (
@@ -55,6 +60,8 @@ class App extends Component {
           <Route exact path="/login" render={LogInComponent}/>
           <Route exact path="/credits" render={CreditsComponent}/>
           <Route exact path="/debits" render={DebitsComponent}/>
+          <Route exact path="/views" render={ViewsComponent}/>
+
         </div>
       </Router>
     );
