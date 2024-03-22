@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-
+import AccountBalance from './AccountBalance';
 // Keyframes for animation
 const fadeIn = keyframes`
   from {
@@ -29,54 +29,85 @@ const Title = styled.h1`
   animation: ${fadeIn} 1s ease-in-out;
 `;
 
-const List = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-`;
-
-const ListItem = styled.li`
+const StyledLink = styled(Link)`
   font-size: 18px;
+  color: #007bff;
+  text-decoration: none;
   margin-bottom: 10px;
-  color: #555;
-  animation: ${fadeIn} 1s ease-in-out;
-`;
-
-const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
   animation: ${fadeIn} 1s ease-in-out;
 
-  & > * {
-    margin-bottom: 10px;
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
-const Debits = (props) => {
-  // Create the list of Debit items
-  const debitsView = props.debits.map((debit) => (
-    <ListItem key={debit.id}>
-      {debit.amount} {debit.description} {debit.date.slice(0, 10)}
-    </ListItem>
-  ));
+class Debits extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      debits: [],
+      newDebitDescription: '',
+      newDebitAmount: ''
+    };
+  }
 
-  return (
-    <Container>
-      <Title>Debits</Title>
+  componentDidMount() {
+    // Fetch debit data from the API endpoint
+    fetch('https://johnnylaicode.github.io/api/debits.json')
+      .then(response => response.json())
+      .then(data => this.setState({ debits: data }));
+  }
 
-      <List>{debitsView}</List>
+  // Handle input change for new debit description
+  handleDescriptionChange = (event) => {
+    this.setState({ newDebitDescription: event.target.value });
+  }
 
-      <StyledForm onSubmit={props.addDebit}>
-        <input type="text" name="description" placeholder="Description" />
-        <input type="number" name="amount" placeholder="Amount" />
-        <button type="submit">Add Debit</button>
-      </StyledForm>
-      
-      <Link to="/">Return to Home</Link>
-    </Container>
-  );
+  // Handle input change for new debit amount
+  handleAmountChange = (event) => {
+    this.setState({ newDebitAmount: event.target.value });
+  }
+
+  // Add new debit
+  addDebit = () => {
+    const { newDebitDescription, newDebitAmount } = this.state;
+    if (newDebitDescription && newDebitAmount) {
+      const newDebit = {
+        description: newDebitDescription,
+        amount: parseFloat(newDebitAmount)
+      };
+      this.setState(prevState => ({
+        debits: [...prevState.debits, newDebit],
+        newDebitDescription: '',
+        newDebitAmount: ''
+      }));
+    }
+  }
+
+  render() {
+    return (
+      <Container>
+        <Title>Debits</Title>
+       
+        <AccountBalance />
+
+        <div>
+          <input type="text" placeholder="Description" value={this.state.newDebitDescription} onChange={this.handleDescriptionChange} />
+          <input type="number" placeholder="Amount" value={this.state.newDebitAmount} onChange={this.handleAmountChange} />
+          <button onClick={this.addDebit}>Add Debit</button>
+        </div>
+        <div>
+          <h3>Debits List:</h3>
+          <ul>
+            {this.state.debits.map((debit, index) => (
+              <li key={index}>{debit.description}: ${debit.amount.toFixed(2)}</li>
+            ))}
+          </ul>
+        </div>
+        <StyledLink to="/">Return to Home</StyledLink>
+      </Container>
+    );
+  }
 }
 
 export default Debits;

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import AccountBalance from './AccountBalance'; // Import AccountBalance component
 
 // Keyframes for animation
 const fadeIn = keyframes`
@@ -41,13 +42,78 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const Credits = (props) => {
-  return (
-    <Container>
-      <Title>Credits</Title>
-      <StyledLink to="/">Return to Home</StyledLink>
-    </Container>
-  );
+class Credits extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      credits: [],
+      newCreditDescription: '',
+      newCreditAmount: ''
+    };
+  }
+
+  componentDidMount() {
+    // Fetch credit data from the API endpoint
+    fetch('https://johnnylaicode.github.io/api/credits.json')
+      .then(response => response.json())
+      .then(data => this.setState({ credits: data }));
+  }
+
+  // Handle input change for new credit description
+  handleDescriptionChange = (event) => {
+    this.setState({ newCreditDescription: event.target.value });
+  }
+
+  // Handle input change for new credit amount
+  handleAmountChange = (event) => {
+    this.setState({ newCreditAmount: event.target.value });
+  }
+
+  // Add new credit
+  addCredit = () => {
+    const { newCreditDescription, newCreditAmount } = this.state;
+    if (newCreditDescription && newCreditAmount) {
+      const newCredit = {
+        description: newCreditDescription,
+        amount: parseFloat(newCreditAmount)
+      };
+      this.setState(prevState => ({
+        credits: [...prevState.credits, newCredit],
+        newCreditDescription: '',
+        newCreditAmount: ''
+      }));
+    }
+  }
+  
+  
+
+  render() {
+    return (
+      <Container>
+        <Title>Credits</Title>
+
+        {/* Render AccountBalance component */}
+        <AccountBalance />
+
+        <div>
+          <input type="text" placeholder="Description" value={this.state.newCreditDescription} onChange={this.handleDescriptionChange} />
+          <input type="number" placeholder="Amount" value={this.state.newCreditAmount} onChange={this.handleAmountChange} />
+          <button onClick={this.addCredit}>Add Credit</button>
+        </div>
+
+        <div>
+          <h3>Credits List:</h3>
+          <ul>
+            {this.state.credits.map((credit, index) => (
+              <li key={index}>{credit.description}: ${credit.amount.toFixed(2)}</li>
+            ))}
+          </ul>
+        </div>
+
+        <StyledLink to="/">Return to Home</StyledLink>
+      </Container>
+    );
+  }
 }
 
 export default Credits;

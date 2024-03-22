@@ -46,7 +46,7 @@ const Title = styled.h1`
 
 const StyledLink = styled(Link)`
   font-size: 18px;
-  color: cyan;
+  color: white;
   text-decoration: none;
   margin-bottom: 10px;
   animation: ${fadeIn} 1s ease-in-out;
@@ -64,8 +64,8 @@ class Home extends Component {
         <Title>Bank of React</Title>
         <StyledLink to="/userProfile">User Profile</StyledLink>
         <StyledLink to="/login">Login</StyledLink>
-        <StyledLink to="/credits">Credits (to be implemented in the Assignment)</StyledLink>
-        <StyledLink to="/debits">Debits (to be implemented in the Assignment)</StyledLink>
+        <StyledLink to="/credits">Credits </StyledLink>
+        <StyledLink to="/debits">Debits</StyledLink>
         <AccountBalance accountBalance={this.props.accountBalance} />
       </Container>
     );
