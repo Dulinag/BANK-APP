@@ -25,7 +25,7 @@ const Container = styled.div`
 const Title = styled.h1`
   font-size: 36px;
   margin-bottom: 20px;
-  color: #333;
+  color: white;
   animation: ${fadeIn} 1s ease-in-out;
 `;
 
@@ -41,21 +41,36 @@ const StyledLink = styled(Link)`
   }
 `;
 
+
+const StyledText = styled.div`
+  font-size: 18px;
+  color: White;
+  text-decoration: none;
+  margin-bottom: 10px;
+  animation: ${fadeIn} 1s ease-in-out;
+
+
+`;
 class Debits extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      debits: [],
+      debits: JSON.parse(localStorage.getItem('debits')) || [],
       newDebitDescription: '',
-      newDebitAmount: ''
+      newDebitAmount: '',
+      refreshBalanceKey: Date.now(), // For refreshing AccountBalance
     };
   }
 
   componentDidMount() {
-    // Fetch debit data from the API endpoint
-    fetch('https://johnnylaicode.github.io/api/debits.json')
-      .then(response => response.json())
-      .then(data => this.setState({ debits: data }));
+    if (this.state.debits.length === 0) {
+      fetch('https://johnnylaicode.github.io/api/debits.json')
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ debits: data });
+          localStorage.setItem('debits', JSON.stringify(data));
+        });
+    }
   }
 
   // Handle input change for new debit description
@@ -70,39 +85,47 @@ class Debits extends Component {
 
   // Add new debit
   addDebit = () => {
-    const { newDebitDescription, newDebitAmount } = this.state;
+    const { newDebitDescription, newDebitAmount, debits } = this.state;
     if (newDebitDescription && newDebitAmount) {
       const newDebit = {
         description: newDebitDescription,
         amount: parseFloat(newDebitAmount)
       };
-      this.setState(prevState => ({
-        debits: [...prevState.debits, newDebit],
+      const updatedDebits = [...debits, newDebit];
+      this.setState({
+        debits: updatedDebits,
         newDebitDescription: '',
-        newDebitAmount: ''
-      }));
+        newDebitAmount: '',
+        refreshBalanceKey: Date.now(),
+      });
+      localStorage.setItem('debits', JSON.stringify(updatedDebits));
     }
   }
+
 
   render() {
     return (
       <Container>
         <Title>Debits</Title>
        
-        <AccountBalance />
-
+        <AccountBalance key={this.state.refreshBalanceKey} />
         <div>
           <input type="text" placeholder="Description" value={this.state.newDebitDescription} onChange={this.handleDescriptionChange} />
           <input type="number" placeholder="Amount" value={this.state.newDebitAmount} onChange={this.handleAmountChange} />
           <button onClick={this.addDebit}>Add Debit</button>
         </div>
         <div>
+          <StyledText>
           <h3>Debits List:</h3>
+          </StyledText>
+
+          <StyledText>
           <ul>
             {this.state.debits.map((debit, index) => (
               <li key={index}>{debit.description}: ${debit.amount.toFixed(2)}</li>
             ))}
           </ul>
+          </StyledText>
         </div>
         <StyledLink to="/">Return to Home</StyledLink>
       </Container>

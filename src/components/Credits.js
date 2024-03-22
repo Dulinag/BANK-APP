@@ -26,7 +26,7 @@ const Container = styled.div`
 const Title = styled.h1`
   font-size: 36px;
   margin-bottom: 20px;
-  color: #333;
+  color: white;
   animation: ${fadeIn} 1s ease-in-out;
 `;
 
@@ -42,22 +42,41 @@ const StyledLink = styled(Link)`
   }
 `;
 
+const StyledText = styled.div`
+  font-size: 18px;
+  color: White;
+  text-decoration: none;
+  margin-bottom: 10px;
+  animation: ${fadeIn} 1s ease-in-out;
+
+`;
+
+
 class Credits extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      credits: [],
+      credits: JSON.parse(localStorage.getItem('credits')) || [],
       newCreditDescription: '',
-      newCreditAmount: ''
+      newCreditAmount: '',
+      refreshBalanceKey: Date.now(), // Added to refresh AccountBalance component
     };
   }
 
   componentDidMount() {
-    // Fetch credit data from the API endpoint
-    fetch('https://johnnylaicode.github.io/api/credits.json')
-      .then(response => response.json())
-      .then(data => this.setState({ credits: data }));
+    let data = localStorage.getItem('credits');
+    if (data) {
+      this.setState({ credits: JSON.parse(data) });
+    } else {
+      fetch('https://johnnylaicode.github.io/api/credits.json')
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ credits: data });
+          localStorage.setItem('credits', JSON.stringify(data));
+        });
+    }
   }
+  
 
   // Handle input change for new credit description
   handleDescriptionChange = (event) => {
@@ -75,15 +94,19 @@ class Credits extends Component {
     if (newCreditDescription && newCreditAmount) {
       const newCredit = {
         description: newCreditDescription,
-        amount: parseFloat(newCreditAmount)
+        amount: parseFloat(newCreditAmount),
       };
-      this.setState(prevState => ({
-        credits: [...prevState.credits, newCredit],
+      const updatedCredits = [...this.state.credits, newCredit];
+      this.setState({
+        credits: updatedCredits,
         newCreditDescription: '',
-        newCreditAmount: ''
-      }));
+        newCreditAmount: '',
+        refreshBalanceKey: Date.now(), // Update key to refresh AccountBalance
+      });
+      localStorage.setItem('credits', JSON.stringify(updatedCredits)); // Save to local storage
     }
-  }
+  };
+
   
   
 
@@ -93,8 +116,7 @@ class Credits extends Component {
         <Title>Credits</Title>
 
         {/* Render AccountBalance component */}
-        <AccountBalance />
-
+        <AccountBalance key={this.state.refreshBalanceKey} /> {/* Use key to force refresh */}
         <div>
           <input type="text" placeholder="Description" value={this.state.newCreditDescription} onChange={this.handleDescriptionChange} />
           <input type="number" placeholder="Amount" value={this.state.newCreditAmount} onChange={this.handleAmountChange} />
@@ -102,12 +124,16 @@ class Credits extends Component {
         </div>
 
         <div>
+        <StyledText>
           <h3>Credits List:</h3>
+          </StyledText>
+          <StyledText>
           <ul>
             {this.state.credits.map((credit, index) => (
               <li key={index}>{credit.description}: ${credit.amount.toFixed(2)}</li>
             ))}
           </ul>
+          </StyledText>
         </div>
 
         <StyledLink to="/">Return to Home</StyledLink>
