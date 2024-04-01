@@ -95,6 +95,7 @@ class Credits extends Component {
       const newCredit = {
         description: newCreditDescription,
         amount: parseFloat(newCreditAmount),
+        date: new Date().toISOString() // Set current date
       };
       const updatedCredits = [...this.state.credits, newCredit];
       this.setState({
@@ -106,6 +107,7 @@ class Credits extends Component {
       localStorage.setItem('credits', JSON.stringify(updatedCredits)); // Save to local storage
     }
   };
+  
 
   
   
@@ -130,10 +132,12 @@ class Credits extends Component {
           <StyledText>
           <ul>
             {this.state.credits.map((credit, index) => (
-              <li key={index}>{credit.description}: ${credit.amount.toFixed(2)}</li>
+              <li key={index}>
+{credit.description}: ${credit.amount.toFixed(2)} - {credit.date ? credit.date.split('T')[0] : ''}
+              </li>
             ))}
           </ul>
-          </StyledText>
+        </StyledText>
         </div>
 
         <StyledLink to="/">Return to Home</StyledLink>

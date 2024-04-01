@@ -67,11 +67,16 @@ class Debits extends Component {
       fetch('https://johnnylaicode.github.io/api/debits.json')
         .then(response => response.json())
         .then(data => {
-          this.setState({ debits: data });
-          localStorage.setItem('debits', JSON.stringify(data));
+          const debitsWithData = data.map(debit => ({
+            ...debit,
+            date: new Date().toISOString() // Assign current date for each fetched debit
+          }));
+          this.setState({ debits: debitsWithData });
+          localStorage.setItem('debits', JSON.stringify(debitsWithData));
         });
     }
   }
+  
 
   // Handle input change for new debit description
   handleDescriptionChange = (event) => {
@@ -89,7 +94,8 @@ class Debits extends Component {
     if (newDebitDescription && newDebitAmount) {
       const newDebit = {
         description: newDebitDescription,
-        amount: parseFloat(newDebitAmount)
+        amount: parseFloat(newDebitAmount),
+        date: new Date().toISOString() // Assign current date for each new debit
       };
       const updatedDebits = [...debits, newDebit];
       this.setState({
@@ -101,6 +107,7 @@ class Debits extends Component {
       localStorage.setItem('debits', JSON.stringify(updatedDebits));
     }
   }
+  
 
 
   render() {
@@ -120,12 +127,16 @@ class Debits extends Component {
           </StyledText>
 
           <StyledText>
-          <ul>
-            {this.state.debits.map((debit, index) => (
-              <li key={index}>{debit.description}: ${debit.amount.toFixed(2)}</li>
-            ))}
-          </ul>
-          </StyledText>
+        <ul>
+        {this.state.debits.map((debit, index) => (
+  <li key={index}>
+    {debit.description}: ${debit.amount.toFixed(2)} - {debit.date ? debit.date.split('T')[0] : ''}
+  </li>
+))}
+
+       </ul>
+      </StyledText>
+
         </div>
         <StyledLink to="/">Return to Home</StyledLink>
       </Container>
