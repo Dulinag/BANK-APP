@@ -130,7 +130,7 @@ class Debits extends Component {
         <ul>
         {this.state.debits.map((debit, index) => (
   <li key={index}>
-    {debit.description}: ${debit.amount.toFixed(2)} - {debit.date ? debit.date.split('T')[0] : ''}
+{debit.description}: ${debit.amount.toFixed(2)} - {debit.date ? new Date(debit.date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) : ''}
   </li>
 ))}
 

@@ -133,7 +133,7 @@ class Credits extends Component {
           <ul>
             {this.state.credits.map((credit, index) => (
               <li key={index}>
-{credit.description}: ${credit.amount.toFixed(2)} - {credit.date ? credit.date.split('T')[0] : ''}
+{credit.description}: ${credit.amount.toFixed(2)} - {credit.date ? new Date(credit.date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) : ''}
               </li>
             ))}
           </ul>
