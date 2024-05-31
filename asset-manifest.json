@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Assignment-3/static/css/main.01e685fb.css",
-    "main.js": "/Assignment-3/static/js/main.32e6ad8d.js",
-    "static/js/453.d81f9453.chunk.js": "/Assignment-3/static/js/453.d81f9453.chunk.js",
-    "index.html": "/Assignment-3/index.html",
-    "main.01e685fb.css.map": "/Assignment-3/static/css/main.01e685fb.css.map",
-    "main.32e6ad8d.js.map": "/Assignment-3/static/js/main.32e6ad8d.js.map",
-    "453.d81f9453.chunk.js.map": "/Assignment-3/static/js/453.d81f9453.chunk.js.map"
+    "main.css": "/BANK-APP/static/css/main.01e685fb.css",
+    "main.js": "/BANK-APP/static/js/main.17562c3e.js",
+    "static/js/453.d81f9453.chunk.js": "/BANK-APP/static/js/453.d81f9453.chunk.js",
+    "index.html": "/BANK-APP/index.html",
+    "main.01e685fb.css.map": "/BANK-APP/static/css/main.01e685fb.css.map",
+    "main.17562c3e.js.map": "/BANK-APP/static/js/main.17562c3e.js.map",
+    "453.d81f9453.chunk.js.map": "/BANK-APP/static/js/453.d81f9453.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.01e685fb.css",
-    "static/js/main.32e6ad8d.js"
+    "static/js/main.17562c3e.js"
   ]
 }
